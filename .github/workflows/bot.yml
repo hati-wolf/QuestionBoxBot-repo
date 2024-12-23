@@ -1,0 +1,30 @@
+name: Run Discord Question Bot
+
+on:
+  push:
+    branches:
+      - main  # mainブランチにプッシュされたときに実行
+  workflow_dispatch:  # 手動で実行できるようにするオプション
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Ubuntu環境で実行
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # リポジトリのコードをチェックアウト
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'  # 必要なPythonのバージョンを指定
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # 依存関係をインストール
+
+      - name: Run Discord bot
+        run: |
+          python discord_qustion_bot/main.py  # main.pyを実行
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Discordトークンを環境変数として設定
