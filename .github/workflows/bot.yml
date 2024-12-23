@@ -27,4 +27,4 @@ jobs:
         run: |
           python discord_qustion_bot/main.py  # main.pyを実行
         env:
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Discordトークンを環境変数として設定
+          DISCORD_TOKEN: ${{ MTMyMDczNDE2NzU4NzM2MDgwOQ.GteirJ.spcrCFTldwMC_rk5ee7Ym9xYdYuiIxLb7xWzA4 }}  # Discordトークンを環境変数として設定
