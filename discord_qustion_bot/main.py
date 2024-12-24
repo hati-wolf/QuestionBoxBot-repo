@@ -1,7 +1,19 @@
+import io
+import json
+import csv
 import os
+import asyncio
+import logging
+
+import aiohttp
+from pathlib import Path
+import configparser
+
 import discord
+from discord import activity
 from discord.ext import commands
 from discord.ext.commands import Bot
+
 
 class UserHelp(commands.DefaultHelpCommand):
     def __init__(self):
@@ -20,31 +32,33 @@ class UserHelp(commands.DefaultHelpCommand):
         )
 
 
-def main():
-    # GitHub Actionsの環境変数からトークンとチャンネルIDを取得
-    TOKEN = os.getenv('DISCORD_TOKEN')
-    CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
+async def periodic_log():
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+    while True:
+        logger.info("Bot is still running...")
+        await asyncio.sleep(300)  # 5分ごとにログを出力
 
-    if not TOKEN or not CHANNEL_ID:
-        raise ValueError("DISCORD_TOKEN または DISCORD_CHANNEL_ID が設定されていません。")
 
-    # 必要な intents を設定
-    intents = discord.Intents.default()
-    intents.messages = True  # メッセージイベントを受信できるように設定
-    intents.message_content = True  # メッセージコンテンツにアクセスできるように設定
-
+async def main():
+    TOKEN = os.getenv("DISCORD_TOKEN")
     prefix = '~'
+
+    intents = discord.Intents.default()
+    intents.messages = True  # 必要なインテントを有効化
+
     bot = Bot(
         command_prefix=prefix,
         help_command=UserHelp(),
         activity=discord.Game(name=f"send DM or {prefix}help"),
-        intents=intents  # intentsを指定
+        intents=intents,
     )
 
-    # 通常通りに拡張機能を読み込み
-    bot.load_extension('cog')
-    bot.run(TOKEN)
+    await bot.load_extension('cog')  # 非同期で拡張をロード
+
+    asyncio.create_task(periodic_log())  # ログタスクを実行
+    await bot.start(TOKEN)  # Botを開始
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
