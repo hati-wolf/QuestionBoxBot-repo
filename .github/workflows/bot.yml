@@ -1,4 +1,4 @@
-name: Run Question Box Bot
+name: Run Discord Bot
 
 on:
   push:
@@ -10,22 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r discord_qustion_bot/requirements.txt
 
-    - name: Run bot
-      env:
-        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-        DISCORD_CHANNEL_ID: ${{ secrets.DISCORD_CHANNEL_ID }}
-      run: |
-        python discord_qustion_bot/main.py
+      - name: Run bot
+        run: |
+          python discord_qustion_bot/main.py
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # GitHub Secretsからトークンを取得
+          DISCORD_CHANNEL_ID: ${{ secrets.DISCORD_CHANNEL_ID }}  # GitHub SecretsからチャンネルIDを取得
