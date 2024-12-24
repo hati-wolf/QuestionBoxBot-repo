@@ -21,11 +21,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r discord_qustion_bot/requirements.txt
+          pip install -r QuestionBoxBot-repo/requirements.txt
 
       - name: Run bot
         run: |
-          python discord_qustion_bot/main.py
+          python QuestionBoxBot-repo/main.py
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # GitHub Secretsからトークンを取得
           DISCORD_CHANNEL_ID: ${{ secrets.DISCORD_CHANNEL_ID }}  # GitHub SecretsからチャンネルIDを取得
