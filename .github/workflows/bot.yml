@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: '3.x'
 
       # 依存関係のインストール
       - name: Install dependencies
@@ -31,6 +31,8 @@ jobs:
           echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" >> $GITHUB_ENV
           echo "DISCORD_CHANNEL_ID=${{ secrets.DISCORD_CHANNEL_ID }}" >> $GITHUB_ENV
 
-      # Botの実行
+      # `main.py` のあるディレクトリに移動してから実行
       - name: Run bot
-        run: python main.py
+        run: |
+          cd discord_qustion_bot  # `main.py` があるディレクトリに移動
+          python main.py
