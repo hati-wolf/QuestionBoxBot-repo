@@ -1,6 +1,7 @@
 import io
 import json
 import csv
+import os
 
 import aiohttp
 from pathlib import Path
@@ -46,3 +47,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+TOKEN = os.getenv("DISCORD_TOKEN")  # GitHub Secretsから取得
+if not TOKEN:
+    raise ValueError("DISCORD_TOKEN is not set in the environment variables")
