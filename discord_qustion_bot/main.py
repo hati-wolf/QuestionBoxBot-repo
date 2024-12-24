@@ -1,4 +1,4 @@
-import json
+import os
 import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
@@ -20,9 +20,12 @@ class UserHelp(commands.DefaultHelpCommand):
         )
 
 def main():
-    with open('./info.json', 'r') as f:
-        json_load = json.load(f)
-    TOKEN = json_load['token']
+    # 環境変数からトークンとチャンネルIDを取得
+    TOKEN = os.getenv('DISCORD_TOKEN')
+    CHANNEL_ID = os.getenv('DISCORD_CHANNEL_ID')
+
+    if not TOKEN or not CHANNEL_ID:
+        raise ValueError("DISCORD_TOKEN または DISCORD_CHANNEL_ID が環境変数に設定されていません")
 
     # Intentsの設定
     intents = discord.Intents.default()
