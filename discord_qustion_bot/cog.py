@@ -1,30 +1,42 @@
 import discord
-import os
 from discord.ext import commands
+import os
 
-class QuestionBoxCog(commands.Cog):
-    def __init__(self, bot):
+class QuestionBotCog(commands.Cog, name="QuestionBox"):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
-
-    @commands.command()
-    async def help(self, ctx):
-        """ヘルプメッセージを表示します"""
-        await ctx.send("質問箱Botのコマンドを表示します")
+        self.channel_id: int = int(os.getenv('DISCORD_CHANNEL_ID'))
 
     @commands.Cog.listener()
-    async def on_message(self, message):
-        """メッセージを処理し、DMから指定されたチャンネルに送信します"""
-        if message.author == self.bot.user:
+    async def on_message(self, message: discord.Message):
+        if message.author.bot:
             return
+        if str(message.channel.type) != 'private':
+            return
+        to_send_channel: discord.TextChannel = self.bot.get_channel(self.channel_id)
+        if not to_send_channel:
+            return await message.author.send('転送対象のテキストチャンネルが見つかりません。転送したいチャンネルで`/set`と送信してください。')
+        text = message.content
+        if text:
+            # CSVに保存する処理
+            await to_send_channel.send(text)
+        for file_ in message.attachments:
+            file_url = file_.url
+            file_name = file_.filename
+            # 添付ファイルを処理する部分
+            async with aiohttp.ClientSession() as session:
+                async with session.get(file_url) as resp:
+                    if resp.status != 200:
+                        return await to_send_channel.send('ファイルを取得できませんでした')
+                    data = io.BytesIO(await resp.read())
+                    await to_send_channel.send(file=discord.File(data, file_name))
 
-        if isinstance(message.channel, discord.DMChannel):
-            # DMから送られたメッセージを指定チャンネルに送信
-            channel = self.bot.get_channel(int(os.getenv('DISCORD_CHANNEL_ID')))
-            if channel:
-                await channel.send(f"匿名メッセージ: {message.content}")
-            else:
-                print("チャンネルが見つかりませんでした")
+    @commands.command(name='set')
+    async def _set(self, ctx: commands.Context):
+        "質問を転送するチャンネルを設定します"
+        channel_id: int = ctx.channel.id
+        self.channel_id = channel_id
+        await ctx.send('メッセージを転送するチャンネルをこのチャンネルに変更しました')
 
-# 通常の同期関数に変更
-def setup(bot):
-    bot.add_cog(QuestionBoxCog(bot))
+def setup(bot: commands.Bot):
+    return bot.add_cog(QuestionBotCog(bot))

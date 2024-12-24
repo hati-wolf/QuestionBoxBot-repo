@@ -1,10 +1,7 @@
-# main.py
-import discord
-import asyncio
 import os
+import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
-
 
 class UserHelp(commands.DefaultHelpCommand):
     def __init__(self):
@@ -23,26 +20,23 @@ class UserHelp(commands.DefaultHelpCommand):
         )
 
 
-async def main():
-    TOKEN = os.getenv('DISCORD_TOKEN')  # GitHub Secretsからトークンを取得
-    CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))  # GitHub SecretsからチャンネルIDを取得
+def main():
+    # GitHub Actionsの環境変数からトークンとチャンネルIDを取得
+    TOKEN = os.getenv('DISCORD_TOKEN')
+    CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
 
     if not TOKEN or not CHANNEL_ID:
-        raise ValueError("DISCORD_TOKEN or DISCORD_CHANNEL_ID is not set in the environment variables")
+        raise ValueError("DISCORD_TOKEN または DISCORD_CHANNEL_ID が設定されていません。")
 
     prefix = '~'
-    intents = discord.Intents.default()  # 必要なインテントを設定
     bot = Bot(
         command_prefix=prefix,
         help_command=UserHelp(),
-        activity=discord.Game(name=f"send DM or {prefix}help"),
-        intents=intents  # インテントを指定
+        activity=discord.Game(name=f"send DM or {prefix}help")
     )
-
-    # 非同期で拡張機能をロード
-    await bot.load_extension('discord_qustion_bot.cog')  # 修正箇所
-    await bot.start(TOKEN)  # bot.run() の代わりに await bot.start() を使います
+    bot.load_extension('cog')
+    bot.run(TOKEN)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())  # 非同期関数を実行
+    main()
