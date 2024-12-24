@@ -1,3 +1,4 @@
+# main.py
 import discord
 import asyncio
 import os
@@ -39,7 +40,7 @@ async def main():
     )
 
     # 非同期で拡張機能をロード
-    await bot.load_extension('discord_qustion_bot.cog')
+    await bot.load_extension('discord_qustion_bot.cog')  # 修正箇所
     await bot.start(TOKEN)  # bot.run() の代わりに await bot.start() を使います
 
 
