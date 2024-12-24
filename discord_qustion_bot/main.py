@@ -31,6 +31,7 @@ def main():
     # 必要な intents を設定
     intents = discord.Intents.default()
     intents.messages = True  # メッセージイベントを受信できるように設定
+    intents.message_content = True  # メッセージコンテンツにアクセスできるように設定
 
     prefix = '~'
     bot = Bot(
@@ -39,6 +40,8 @@ def main():
         activity=discord.Game(name=f"send DM or {prefix}help"),
         intents=intents  # intentsを指定
     )
+
+    # 通常通りに拡張機能を読み込み
     bot.load_extension('cog')
     bot.run(TOKEN)
 
