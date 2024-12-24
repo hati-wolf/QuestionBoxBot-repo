@@ -28,11 +28,16 @@ def main():
     if not TOKEN or not CHANNEL_ID:
         raise ValueError("DISCORD_TOKEN または DISCORD_CHANNEL_ID が設定されていません。")
 
+    # 必要な intents を設定
+    intents = discord.Intents.default()
+    intents.messages = True  # メッセージイベントを受信できるように設定
+
     prefix = '~'
     bot = Bot(
         command_prefix=prefix,
         help_command=UserHelp(),
-        activity=discord.Game(name=f"send DM or {prefix}help")
+        activity=discord.Game(name=f"send DM or {prefix}help"),
+        intents=intents  # intentsを指定
     )
     bot.load_extension('cog')
     bot.run(TOKEN)
