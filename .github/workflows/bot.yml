@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main  # デプロイを実行するブランチ
+  schedule:
+    - cron: '0 4 * * *'  # 毎日午前4時に再起動
 
 jobs:
   build:
@@ -34,5 +36,5 @@ jobs:
       # `main.py` のあるディレクトリに移動してから実行
       - name: Run bot
         run: |
-          cd discord_qustion_bot  # `main.py` があるディレクトリに移動
+          cd discord_qustion_bot
           python main.py
