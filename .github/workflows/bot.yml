@@ -5,7 +5,7 @@ on:
     branches:
       - main  # デプロイを実行するブランチ
   schedule:
-    - cron: '0 4 * * *'  # 毎日午前4時に再起動
+    - cron: "0 */6 * * *"  # 6時間ごとにジョブを実行
 
 jobs:
   build:
