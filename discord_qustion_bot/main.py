@@ -8,9 +8,9 @@ import logging
 import aiohttp
 from pathlib import Path
 import configparser
+from datetime import datetime  # 現在時刻を取得するためにインポート
 
 import discord
-from discord import activity
 from discord.ext import commands
 from discord.ext.commands import Bot
 
@@ -36,7 +36,8 @@ async def periodic_log():
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
     while True:
-        logger.info("Bot is still running...")
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 現在時刻をフォーマット
+        logger.info(f"Bot is still running... Current time: {current_time}")
         await asyncio.sleep(300)  # 5分ごとにログを出力
 
 
